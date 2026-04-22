@@ -44,7 +44,7 @@ class JokeScreenViewModel @Inject constructor(
             is JokeScreenUiEvent.ChargeNewJoke -> chargeJokeByCategory()
             is JokeScreenUiEvent.DeselectCategory -> updateState {
                 copy(
-                    selectedJokeCategories = avariableJokeCategories.minus(
+                    selectedJokeCategories = selectedJokeCategories.minus(
                         event.category
                     )
                 )
@@ -52,7 +52,7 @@ class JokeScreenViewModel @Inject constructor(
 
             is JokeScreenUiEvent.DeselectFlag -> updateState {
                 copy(
-                    selectedJokeFlags = avariableJokeFlags.minus(
+                    selectedJokeFlags = selectedJokeFlags.minus(
                         event.flag
                     )
                 )
@@ -60,7 +60,7 @@ class JokeScreenViewModel @Inject constructor(
 
             is JokeScreenUiEvent.SelectCategory -> updateState {
                 copy(
-                    selectedJokeCategories = avariableJokeCategories.plus(
+                    selectedJokeCategories = selectedJokeCategories.plus(
                         event.category
                     )
                 )
@@ -68,7 +68,7 @@ class JokeScreenViewModel @Inject constructor(
 
             is JokeScreenUiEvent.SelectFlag -> updateState {
                 copy(
-                    selectedJokeFlags = avariableJokeFlags.plus(
+                    selectedJokeFlags = selectedJokeFlags.plus(
                         event.flag
                     )
                 )
@@ -82,7 +82,10 @@ class JokeScreenViewModel @Inject constructor(
     private fun insertJokeFavourite(joke: Joke) {
         viewModelScope.launch {
             InsertJokeFavourite(joke.toEntity())
-                .onSuccess { showToast("Chiste añadido a favoritos") }
+                .onSuccess {
+                    updateState { copy(joke = joke.copy(isFavourite = true)) }
+                    showToast("Chiste añadido a favoritos")
+                }
                 .onError { handleError(it) }
         }
     }
@@ -90,13 +93,13 @@ class JokeScreenViewModel @Inject constructor(
     private fun removeJokeFavourite() {
         viewModelScope.launch {
             val jokeId = _uiState.value.joke?.id
-            if(jokeId == null){
+            if (jokeId == null) {
                 showToast("No se ha encontrado el chiste")
                 return@launch
             }
             deleteJokeFavourite(jokeId)
                 .onSuccess {
-                    isJokeFavourite(jokeId)
+                    updateState { copy(joke = joke?.copy(isFavourite = false)) }
                     showToast("Chiste eliminado de favoritos")
                 }
                 .onError { handleError(it) }

@@ -24,7 +24,9 @@ object DatabaseModule {
             context,
             JokeDatabase::class.java,
             DATABASE_NAME
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

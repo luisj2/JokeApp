@@ -8,7 +8,7 @@ import com.xluis.adviceapp.Data.Room.Entities.JokeFavouriteEntity
 
 @Database(
     entities = [JokeFavouriteEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

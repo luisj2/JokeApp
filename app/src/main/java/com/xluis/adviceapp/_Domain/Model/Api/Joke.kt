@@ -1,8 +1,10 @@
 package com.xluis.adviceapp._Domain.Model.Api
 
+
 data class Joke(
     val id: Int,
-    val text: String,
+    val setup: String?,
+    val delivery: String?,
     val category: String,
     val flags: List<JokeFlag>,
     val isFavourite : Boolean = false
